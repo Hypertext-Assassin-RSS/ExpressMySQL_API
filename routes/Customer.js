@@ -3,8 +3,10 @@ const {json} = require("express");
 const  router = express.Router()
 const app = express();
 const db = require('../configs/db.configs')
+const cors=require('cors');
 
 app.use(express.json)
+app.use(cors())
 
 const mysql = require('mysql')
 const connection = mysql.createConnection(db.database);
@@ -29,7 +31,7 @@ router.get('/',(req, res) => {
         if (err){
             res.send('Data Load Failed :'+err)
         }else {
-            res.send(result)
+            res.json(result)
         }
     })
 })
