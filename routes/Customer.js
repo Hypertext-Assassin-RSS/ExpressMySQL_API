@@ -36,8 +36,8 @@ router.get('/',(req, res) => {
     })
 })
 
-router.post('/',(req, res) => {
-    console.log(req.body)
+router.post('/save',(req, res) => {
+    console.log('add method')
 
     const id = req.body.id
     const name = req.body.name
@@ -47,15 +47,16 @@ router.post('/',(req, res) => {
     let query = 'INSERT INTO Customer(id, name, address, salary) VALUES (?,?,?,?)'
     connection.query(query,[id,name,address,salary],function (err, result, fields) {
         if (err){
-            res.send("Customer Save Fail :"+err)
+            res.send({error:err,status:404,message:"Customer "+id+" not saved!!!"})
         }else {
             console.log(result)
-            res.send({message:'Customer '+req.body.id + ' Saved'})
+            res.send({status:200,message:'Customer '+req.body.id + ' Saved'})
         }
     })
 })
 
-router.put('/',(req, res) => {
+router.put('/update',(req, res) => {
+    console.log('update method')
 
     const id = req.body.id
     const name = req.body.name
@@ -72,13 +73,16 @@ router.put('/',(req, res) => {
     })
 })
 
-router.delete('/',(req, res) =>{
+router.delete('/delete',(req, res) =>{
+    console.log('delete method')
     const id = req.query.id
 
     let query = "DELETE FROM Customer WHERE id = ?"
     connection.query(query,[id],function (err, result, fields) {
-        if (err){
-            res.send('Customer '+id+' Delete Failed :'+err)
+        if (err) {
+            res.send('Customer ' + id + ' Delete Failed :' + err)
+        }else if (id === null){
+            res.send({error:err,status:404,message:"Customer id cannot be null!!!"})
         }else {
             res.send({message:'Customer '+req.query.id + ' Deleted!'})
         }
@@ -86,6 +90,7 @@ router.delete('/',(req, res) =>{
 })
 
 router.get('/search',(req, res) => {
+    console.log('search method')
     const id = req.query.id
 
     let query = 'SELECT * FROM Customer WHERE id = ?'
